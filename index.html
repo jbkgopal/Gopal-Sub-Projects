@@ -1,0 +1,819 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Real Phone</title>
+</head>
+<body>
+    <div class="main">
+        <nav>
+            <div class="logo">
+                <img src="logo.png" >
+            </div>
+            <div class="nav-links">
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Phone</a></li>
+                    <li><a href="#">Accessories</a></li>
+                    <li><a href="#">Cart</a></li>
+                </ul>
+            </div>
+        </nav>
+        <div class="information">
+            <div class="overlay"></div>
+            <img src="mobile.png" class="mobile">
+            <div id="circle">
+                <div class="feature one">
+                    <img src="camera.png">
+                    <div>
+                        <h1>Camera</h1>
+                        <p>12MP,Wide Angle Lens</p>
+                    </div>
+                </div>
+                <div class="feature two">
+                    <img src="processor.png">
+                    <div>
+                        <h1>Processor</h1>
+                        <p>Snapdragon octa-core 7mm</p>
+                    </div>
+                </div>
+                <div class="feature three">
+                    <img src="display.png">
+                    <div>
+                        <h1>Display</h1>
+                        <p>5.5inch UHD Amoled Display</p>
+                    </div>
+                </div>
+                <div class="feature four">
+                    <img src="battery.png">
+                    <div>
+                        <h1>Battery</h1>
+                        <p>5000mAH, 720Hrs Standby</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="controls">
+            <img src="arrow.png"  id="upBtn">
+            <h3>Features</h3>
+            <img src="arrow.png" id="downBtn">   
+        </div>
+    </div>
+    <script>
+        var circle=document.getElementById("circle");
+        var upBtn=document.getElementById("upBtn");
+        var downBtn=document.getElementById("downBtn");
+        var rotatevalue=circle.style.transform;
+        var rotatesum;
+        upBtn.onclick=function(){
+            rotatesum=rotatevalue+"rotate(-90deg)";
+            circle.style.transform=rotatesum;
+            rotatevalue=rotatesum;
+        }
+        downBtn.onclick=function(){
+            rotatesum=rotatevalue+"rotate(90deg)";
+            circle.style.transform=rotatesum;
+            rotatevalue=rotatesum;
+        }
+    </script>
+
+<div class="gopal">
+        <a href="#">Home</a>
+        <a href="#">Service</a>
+        <a href="#">About Us</a>
+        <a href="#">Contact Us</a>
+    </div>
+
+
+
+
+        <div id="container">
+            <div id="score">Score: <span id="scoreValue">0</span></div>
+            <div id="correct">Correct</div>
+            <div id="wrong">Try Again</div>
+            <div id="question"></div>
+            <div id="instruction">Click on the correct answer</div>
+            <div id="choices">
+                <div id="box1" class="box"></div>
+                <div id="box2" class="box"></div>
+                <div id="box3" class="box"></div>
+                <div id="box4" class="box"></div>
+            </div>
+            <div id="startreset">Start Game</div>
+            <div id="timeremaining">Time remaining: <span id="time">60</span> sec</div>
+            <div id="gameover"></div>
+        </div>
+
+        <script type="text/javascript">
+            var playing = false;
+            var score;
+            var action;
+            var timeremaining;
+            var correctAnswer;
+            //if we click on the start/reset
+            document.getElementById("startreset").onclick = function(){
+                //if we are playing
+                if(playing==true){
+                    //reload the page
+                    location.reload();
+            
+                }else{
+                    //change mode to playing
+                    playing = true;
+                    //set score to 0
+                    score = 0;
+                    document.getElementById("scoreValue").innerHTML = score;
+                    //show countdown box
+                    document.getElementById("timeremaining").style.display = "block";
+                    timeremaining = 60;
+                    document.getElementById("time").innerHTML = timeremaining;
+                    //hide gameover box
+                    document.getElementById("gameover").style.display = "none";
+                    //change button to reset
+                    document.getElementById("startreset").innerHTML = "Reset Game";
+                    //start countdown
+                    startCountdown();
+                    //Generate a new Q&A
+                    generateQA();
+                }
+            }
+                //Clicking on answer boxs
+                for(var i=1;i<=4;i++){
+                    document.getElementById("box"+i).onclick = function(){
+                    //check if we are playing
+                    if(playing == true){
+                        if(this.innerHTML == correctAnswer){
+                            score++;
+                            document.getElementById("scoreValue").innerHTML = score;
+                            document.getElementById("correct").style.display = "block";
+                            document.getElementById("wrong").style.display = "none";
+                            setTimeout(function(){
+                                document.getElementById("correct").style.display = "none";
+                            },1000)
+                            //Generate Question
+                            generateQA();
+                        }else{
+                            document.getElementById("correct").style.display = "none";
+                            document.getElementById("wrong").style.display = "block";
+                            setTimeout(function(){
+                                document.getElementById("wrong").style.display = "none";
+                            },1000)
+                        }
+                    }
+                }
+            }
+            
+            function startCountdown(){
+                action = setInterval(function(){
+                    timeremaining-=1;
+                    document.getElementById("time").innerHTML = timeremaining;
+                    if(timeremaining == 0){//game over
+                        stopCountdown();
+                        document.getElementById("gameover").style.display = "block";
+                        document.getElementById("gameover").innerHTML = "<p>Game over!</p><p>your score is "+ score +"</p>";
+                        document.getElementById("timeremaining").style.display = "none";
+                        document.getElementById("correct").style.display = "none";
+                        document.getElementById("wrong").style.display = "none";
+                        playing = false;
+                        document.getElementById("startreset").innerHTML = "Start Game";
+                    }
+                },1000)
+            }
+            function stopCountdown(){
+                clearInterval(action);
+            }
+            function generateQA(){
+                var x = Math.round(Math.random()*9) + 1;
+                var y = Math.round(Math.random()*9) + 1;
+                correctAnswer  = x*y;
+                document.getElementById("question").innerHTML = x+"x"+y;
+                var correctPosition = Math.round(Math.random()*3) + 1;
+                //One box is correct answer
+                document.getElementById("box"+correctPosition).innerHTML = correctAnswer;
+                //Filling wrong answer in other boxes
+                var answers = [correctAnswer]
+                for(var i=1;i<=4;i++){
+                    if(i != correctPosition){
+                        var wrongAnswer;
+                        do{
+                            wrongAnswer = (Math.round(Math.random()*9) + 1)*(Math.round(Math.random()*9) + 1);                            
+                        }
+                        while(answers.indexOf(wrongAnswer)>-1);
+                        document.getElementById("box"+i).innerHTML = wrongAnswer;
+                        answers.push(wrongAnswer);
+                    }
+                }
+            }
+        </script>
+
+</body>
+</html>
+
+ 
+
+
+        <style>
+            html{
+                height: 100%;
+                background: radial-gradient(circle, #fff, #ccc);
+            }
+            #container{
+                width: 550px;
+                /* height: 400px; */
+                background-color: #9DD2EA;
+                margin: 100px auto;
+                padding: 20px;
+                border-radius: 10px;
+                /* box-shadow: [horizontal offset][vertical offset][blur radius][optional spread radius][color]; */
+                box-shadow: 0px 5px 0px 0px #009de4;
+                position: relative;
+            }
+            #score{
+                background-color: #f1ff92;
+                color: #888e5f;
+                padding: 11px;
+                box-shadow: 0 4px 0px 0px #888e5f;
+                /* float: right; */
+                position: absolute;
+                right: 10px;
+            }
+            #correct{
+                position: absolute;
+                left: 250px;
+                background-color: green;
+                color: white;
+                padding: 11px;
+                display: none;
+            }
+            #wrong{
+                position: absolute;
+                left: 250px;
+                background-color: red;
+                color: white;
+                padding: 11px;
+                display: none;
+            }
+            #question{
+                width: 450px;
+                height: 150px;
+                margin: 50px auto 10px auto;
+                background-color: #9da0ea;
+                box-shadow: 0px 4px 0px 0px #535aa8; 
+                font-size: 100px;
+                text-align: center;
+                font-family: cursive,sans-serif;
+                color: black;
+            }
+            #instruction{
+                width: 450px;
+                height: 50px;
+                background-color: #b481d9;
+                margin: 10px auto;
+                box-shadow: 0 4px 0 0 #8153a8;
+                text-align: center;
+                line-height: 45px;
+            }
+            #choices{
+                width: 450px;
+                height: 100px;
+                margin: 10px auto;
+                display: flex;
+                justify-content: space-between;
+            }
+            .box{
+                width: 85px;
+                height: 85px;
+                background-color: white;
+                border-radius: 3px;
+                cursor: pointer;
+                box-shadow: 0px 4px 0 0 rgba(0,0,0,0.2);
+                text-align: center;
+                line-height: 80px;
+                position: relative;
+                transition: all 0.2s;
+                -webkit-transition: all 0.2s;
+                -ms-transition: all 0.2s;
+                -moz-transition: all 0.2s;
+                -o-transition: all 0.2s;
+            }
+            .box:hover, #startreset:hover{
+                background-color: #9c89f6;
+                color: white;
+                box-shadow: 0 4px 0 0 #6b54d3;
+            }
+            .box:active, #startreset:active{
+                background-color: #9c89f6;
+                color: white;
+                box-shadow: 0 0 0 0 #6b54d3; 
+                top: 4px;               
+            }
+            #startreset{
+                width: 78px;
+                margin: 0 auto;
+                padding: 10px;
+                background-color: rgba(255,255,255,0.5);
+                border-radius: 3px;
+                cursor: pointer;
+                box-shadow: 0px 4px 0 0 rgba(0,0,0,0.2);
+                text-align: center;
+                position: relative;
+                transition: all 0.2s;
+                -webkit-transition: all 0.2s;
+                -ms-transition: all 0.2s;
+                -moz-transition: all 0.2s;
+                -o-transition: all 0.2s;
+            }
+            #timeremaining{
+                /* width: 200px; */
+                padding: 10px;
+                position: absolute;
+                right: 10px;
+                bottom: 20px;
+                background-color: rgba(181,235,36,0.8);
+                border-radius: 3px;
+                box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
+                display: none;
+            }
+            #gameover{
+                width: 500px;
+                height: 200px;
+                background: linear-gradient(#f3ca6b,#f3706c);
+                color: white;
+                font-size: 2.5em;
+                text-align: center;
+                text-transform: uppercase;
+                position: absolute;
+                top: 100px;
+                left: 45px;
+                z-index: 2;
+                display: none;
+            }
+        </style>
+
+
+
+
+<style>
+               .gopal{
+            width: 100%;
+            height: 100vh;
+            display: flex;
+            justify-content:center;
+            align-items: center;
+        }
+        .gopal a{
+            margin:0px 20px;
+            padding:10px 20px;
+            font-size: 20px;
+            text-decoration:none;
+            font-family: cursive;
+            color:black;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.5s;
+        }
+        .gopal a:hover{
+            color:white;
+        }
+        .gopal a::before{
+            content:"";
+            position:absolute;
+            top: 0;
+            left: 0;
+            width: 50%;
+            height: 100%;
+            z-index:-1;
+            background-color: #ff6700;
+            transform: translateY(-100%);
+            transition: all 0.5s;
+        }
+        .gopal a:hover::before{
+            border-radius: 10px 0px 0px 10px;
+            transform:  translateY(0);
+        }
+        .gopal a::after{
+            content:"";
+            position:absolute;
+            top: 0;
+            right: 0;
+            width: 50%;
+            height: 100%;
+            z-index:-1;
+            background-color: #c0c0c0;
+            transform: translateY(100%);
+            transition: all 0.5s;
+        }
+        .gopal a:hover::after{
+            border-radius: 0px 10px 10px 0px;
+            transform:  translateY(0);
+        }
+    </style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;1,100;1,200;1,300;1,400;1,500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/swiper@8/swiper-bundle.min.css"/>
+
+    <title>Pet Met</title>
+</head>
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+        font-family: 'Poppins', sans-serif;
+        box-sizing: border-box;
+        /* background-color: black; */
+    }
+    html{
+        scroll-behavior: smooth;
+    }
+    #arrow{
+        position:fixed;
+        text-decoration: none;
+        width: 40px;
+        height: 40px;
+        text-align: center;
+        right: 15px;
+        bottom: 30px;
+        font-size: 25px;
+        color: black;
+        background-color: rgb(182, 182, 182);
+        border-radius: 50px;
+        z-index: 6;
+    }
+    .menu{
+        padding-top: 20px;
+        width: 100%;
+        height: 60px;
+        display: flex;
+        justify-content: space-between;
+        flex-direction: row;
+        margin-bottom: 50px;
+    }
+    .menu h2{
+        margin-left: 65px;
+        border: 1px solid black;
+        padding: 0 15px;
+        border-radius: 10px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-shadow: 5px 5px 5px rgb(135, 215, 241);
+    }
+    .menu .links{
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .menu .links a{
+            text-decoration: none;
+            padding: 5px 17px;
+            margin: 0 5px;
+            color: black;
+            font-weight: 500;
+    }
+    .menu .links a:hover{
+            background-color: rgb(123, 202, 228);
+            border-radius: 25px;
+    }
+    .swiper{
+        width: 100%;
+        height: 550px;
+    }
+    .swiper-wrapper{
+        align-items: center;
+    }
+    .swiper-slider{
+        width: 100%;
+        height: 550px; 
+        
+    }
+    .swiper-slide img{
+        border-radius: 10px;
+        width: 95%;
+        height: 550px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        
+    }
+    .about{
+        width: 100%;
+        height: 400px;
+        margin-top: 60px;
+        /* background-color: red; */
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+    }
+    .about h1{
+        font-size: 45px;
+    }
+    .about .para{
+        width: 50%;
+        /* background-color: blue; */
+        text-align: center;
+        padding-top: 50px;
+    }
+    .about .para p{
+        font-size: 20px;
+        line-height: 1.5em;
+    }
+    .what{
+
+        margin-bottom: 60px;
+    }
+    .download{
+        width: 100%;
+        height: 500px;
+        /* background-color: red; */
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+    }
+    .float{
+        width: 100%;
+        height: 400px;
+        display: flex;
+        flex-direction: row;
+    }
+    .download h1{
+        text-align: center;
+        font-size: 45px;
+        margin-bottom: 30px;
+    }
+    .download img{
+        border-radius: 20px;
+    }
+    .download a{
+        text-decoration: none;
+        background-color: black;
+        padding: 15px 40px;
+        color: white;
+        border-radius: 20px;
+        margin-bottom: 50px;
+        margin-top: 30px;
+    }
+    .download a:hover{
+        box-shadow: 2px 2px 10px rgb(158, 154, 154);
+    }
+    #dl_btn{
+        margin-right: 50px;
+        text-decoration: none;
+        font-weight: 500;
+        color: white;
+        background-color: black;
+        border-radius: 20px;
+        padding: 5px 40px;
+        line-height: 1.8em;
+    }
+    #dl_btn:hover{
+        box-shadow: 2px 2px 10px rgb(158, 154, 154);
+    }
+
+    .left{
+        /* background-color: red; */
+        width: 50%;
+        display: flex;
+        align-items: left;
+        margin-left: 100px;
+        justify-content: center;
+        flex-direction: column;
+    }
+    .left h2{
+        font-size: 30px;
+        line-height: 2em;
+        padding-left: 60px;
+    }
+    .right{
+        padding-top: 20px;
+        /* background-color: green; */
+        width: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        flex-direction: column;
+    }
+    .right h2{
+        font-size: 36px;
+    }
+
+    .footer{        
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        height: 50px;
+        background: rgb(92, 191, 224);
+    }
+    .footer p{
+        font-weight: 500;
+    }
+    .contactus{
+        margin: 60px 0;
+        width: 100%;
+        height: auto;
+    }
+    .contactus h1{
+        text-align: center;
+    }
+    .contactus{
+        width: 100%;
+    }
+    .contactus .float1{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-around;
+        border: 2px solid li;
+    }
+    .form{
+        margin-top: 90px;
+        padding: 50px;
+        border-radius: 10px;
+        border: 2px solid lightskyblue;
+        text-align: center;
+    }
+    .form input{
+        width: 500px;
+        height: 50px;
+        padding: 10px;
+        margin-bottom: 20px;
+        border-radius: 5px;
+        outline: none;
+        border: none;
+        border-bottom: 2px solid lightskyblue;
+    }
+    .form textarea{
+        padding: 10px;
+    }
+    .form button{
+        margin-top: 15px;
+        padding:  15px 40px;
+        border-radius: 10px;
+        outline: none;
+        border: none;
+        background-color: lightskyblue;
+    }
+    .form button:hover{        
+        box-shadow: 2px 2px 10px rgb(158, 154, 154);
+    }
+    .contactus .float1 .left1 form{
+        display: flex;
+        align-items: center;
+        justify-content: center;        
+    }
+    .contactus .float1 .right1 h1{
+        margin-bottom: 30px;
+    }
+    
+</style>
+<body>
+    <a id="arrow" href="#menu">&uarr;</a>
+    <div id="menu" class="menu">
+        <h2>Pet Met</h2>
+        <div class="links">
+            <a href="#">Home</a>
+            <a href="#aboutus">About Us</a>
+            <a href="#contactus">Contact Us</a>
+            <!-- <a href="#chat-scroll">Chat</a>
+            <a href="#match-scroll">Match</a>
+            <a href="#meet-scroll">Meet</a> -->
+        </div>        
+        <a href="#dl" id="dl_btn">Download</a>
+    </div> 
+
+    <!-- Swiper -->
+    <div class="swiper mySwiper">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide">
+                    <img src="https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1169&q=80" >
+            </div>
+            <div class="swiper-slide">
+                <img src="https://images.pexels.com/photos/3299905/pexels-photo-3299905.jpeg?cs=srgb&dl=pexels-goochie-poochie-grooming-3299905.jpg&fm=jpg" >
+            </div>
+            <div class="swiper-slide">
+                <img src="https://images.unsplash.com/photo-1576201836106-db1758fd1c97?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80" >
+            </div>          
+        </div>
+      </div>
+
+      <!--About Section-->
+      <section id="aboutus" class="about">
+          <h1>About Us</h1>
+          <div class="para">
+            <p>Have you ever met a dog on a walk and can't remember the good boy's name? Have you ever been to the dog park and met a cute Golden Retriever and wanted to remember that moment? Does your friend have a cute pet snake? Or a turtle you want to share with the world?
+            Pets I've Met is a free social media app for adventurous animal lovers. It allows users to keep photo memories of all the animals they meet in an organized, easy-to-access format.</p>
+        </div>
+      </section>
+
+      <!-- What We Are -->
+      <section id="aboutus" class="about what">
+          <h1>What We Are</h1>
+          <div class="para">
+            <p>Have you ever met a dog on a walk and can't remember the good boy's name? Have you ever been to the dog park and met a cute Golden Retriever and wanted to remember that moment? Does your friend have a cute pet snake? Or a turtle you want to share with the world?
+            Pets I've Met is a free social media app for adventurous animal lovers. It allows users to keep photo memories of all the animals they meet in an organized, easy-to-access format.</p>
+        </div>
+      </section>
+
+    <!-- <div id="chat-scroll" class="chat-content"> 
+        <h2>Chat Box</h2> 
+        <div class="chat-box">
+            <div class="msg">
+                <span class="text1">Hi!</span><br>
+                <span class="text2">Hello!</span>
+            </div>         
+            <button class="to">To</button>
+            <input type="text">
+            <button>Send</button>
+        </div>
+    </div>    -->
+
+    <section id="dl" class="download">
+        <h1>To Explore More Download the App</h1>
+        <h2>Avaliable at PlayStore</h2>
+        <div class="float">
+            <div class="left">
+                <h2>* Easy to Use</h2>
+                <h2>* Avaliable for Free</h2>
+                <h2>* 24 x 7 Helpline Support</h2>
+            </div>
+        <div class="right">
+            <h2>Pet Met</h2>
+            <img src="https://play-lh.googleusercontent.com/J5SXdFIrEPql_siWEjqxrvGFHznI34XtYa5u2R3LhSA_ClSwiTLnJNtpNXGAiE_tFug=s180-rw" >
+            <a href="https://play.google.com/store/apps/details?id=petbreeds.userspet.petbreeds" target="_black">Download</a></div>
+        </div>
+        
+    </section>
+
+    <!-- <div id="match-scroll" class="match-content">
+        <div class="profile" ><img src="https://images.unsplash.com/photo-1583511655826-05700d52f4d9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80" width="330px" height="290px">Joni</div>
+        <div class="profile" ><img src="https://images.unsplash.com/photo-1592754862816-1a21a4ea2281?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80" width="330px" height="290px">Lab</div>
+        <div class="profile" ><img src="https://images.unsplash.com/photo-1555685812-4b943f1cb0eb?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80" width="330px" height="290px">Caty</div>
+        <div class="profile" ><img src="https://images.unsplash.com/photo-1563460716037-460a3ad24ba9?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80" width="330px" height="290px">Shady</div>
+        <div class="profile" ><img src="https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=394&q=80" width="330px" height="290px">Puppy</div>
+        <div class="profile" ><img src="https://images.unsplash.com/photo-1559190394-df5a28aab5c5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=435&q=80" width="330px" height="290px">Goldy</div>
+        <div class="profile" ><img src="https://images.unsplash.com/photo-1560807707-8cc77767d783?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=435&q=80" width="330px" height="290px">Cutey</div>
+        <div class="profile" ><img src="https://images.unsplash.com/photo-1629740067905-bd3f515aa739?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=388&q=80" width="330px" height="290px">Smally</div>
+        <div class="profile" ><img src="https://images.unsplash.com/photo-1606214174585-fe31582dc6ee?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80" width="330px" height="290px">Whitey</div>
+        <div class="profile" ><img src="https://images.unsplash.com/photo-1561037404-61cd46aa615b?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80" width="330px" height="290px">Peter</div>
+        <div class="profile" ><img src="https://images.unsplash.com/photo-1517849845537-4d257902454a?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=435&q=80" width="330px" height="290px">Shadow</div>
+        <div class="profile" ><img src="https://images.unsplash.com/photo-1543852786-1cf6624b9987?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=387&q=80" width="330px" height="290px">Albert</div>
+    </div> -->
+
+    <div class="contactus" id="contactus">
+        <h1>Contact Us</h1>
+        <div class="float1">
+            <div class="lift1">
+                <form class="form" >
+                    <input type="text" placeholder="Enter your Full Name"><br>
+                    <input type="email" placeholder="Enter your Email"><br>
+                    <input type="number" placeholder="Enter your Phone Number"><br>
+                    <textarea cols="75" rows="10" placeholder="Message"></textarea><br>
+                    <button>Submit</button>
+                </form>
+            </div>
+            <div class="right1">
+                <h1>Location</h1>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3502.562064237217!2d77.22732101489291!3d28.612911982425636!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390ce2daa9eb4d0b%3A0x717971125923e5d!2sIndia%20Gate!5e0!3m2!1sen!2sin!4v1647250571648!5m2!1sen!2sin" width="600" height="450" style="border:0;"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>© 2021 Copyright Pet Met. All Rights Reserved</p>
+    </footer>
+    <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>  
+    <script>
+        var swiper = new Swiper(".mySwiper", {
+          slidesPerView: 1,
+          spaceBetween: 5,
+          centeredSlides: true,
+          grabCursor: true,
+          loop: true,
+        });
+      </script>
+</body>
+</html>
